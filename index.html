@@ -845,72 +845,146 @@
       top: 0;
       width: 375px;
       background: linear-gradient(180deg, #FFF9F0 0%, #FFE8D6 100%);
-      padding: 40px 30px;
+      padding: 40px 24px;
       box-sizing: border-box;
     }
 
     .share-card {
       background: white;
-      border-radius: 24px;
-      padding: 32px 24px;
-      box-shadow: 0 8px 32px rgba(255, 107, 53, 0.15);
-      text-align: center;
+      border-radius: 28px;
+      padding: 36px 28px 28px;
+      box-shadow: 0 12px 48px rgba(255, 107, 53, 0.2);
+      position: relative;
+      overflow: hidden;
     }
 
-    .share-card-title {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 16px;
+    .share-card-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .share-card-label {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 8px;
     }
 
     .share-card-personality {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
-      margin-bottom: 12px;
+      color: #2D2D2D;
+      margin-bottom: 8px;
     }
 
     .share-card-tag {
       display: inline-block;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 700;
       color: white;
-      margin-bottom: 16px;
+    }
+
+    /* 角色形象区域 */
+    .share-card-character {
+      position: relative;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .share-card-character-bg {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      opacity: 0.15;
+    }
+
+    .share-card-character svg {
+      position: relative;
+      z-index: 1;
+      width: 140px;
+      height: 140px;
+    }
+
+    /* 描述区域 */
+    .share-card-traits {
+      background: #F8F5F0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .share-card-traits-title {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .share-card-traits-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .share-card-trait {
+      background: white;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
     }
 
     .share-card-desc {
       font-size: 14px;
       color: #666;
-      line-height: 1.6;
+      line-height: 1.7;
       margin-bottom: 20px;
+      padding: 0 4px;
+    }
+
+    /* 二维码区域 */
+    .share-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #F0E8E0;
     }
 
     .share-card-qrcode {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+      flex-shrink: 0;
+      background: white;
+      padding: 6px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     }
 
     .share-card-qrcode #share-card-qr {
-      background: white;
-      padding: 8px;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      width: 72px;
+      height: 72px;
+    }
+
+    .share-card-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .share-card-tip {
-      font-size: 12px;
-      color: #999;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2D2D2D;
+      margin-bottom: 4px;
     }
 
     .share-card-brand {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #eee;
-      font-size: 12px;
+      font-size: 11px;
       color: #aaa;
+      line-height: 1.5;
     }
 
     /* 分享图预览弹窗 */
@@ -968,15 +1042,44 @@
 <!-- 分享图容器（隐藏，用于生成图片） -->
 <div id="share-image-container">
   <div class="share-card">
-    <div class="share-card-title">我的创业人格测试结果</div>
-    <div class="share-card-personality" id="share-card-personality">🐟 锦鲤选址师</div>
-    <div class="share-card-tag" id="share-card-tag">人流量探测器</div>
-    <div class="share-card-desc" id="share-card-desc">你天生就是做选址的料，能精准嗅到商机...</div>
-    <div class="share-card-qrcode">
-      <div id="share-card-qr"></div>
-      <div class="share-card-tip">扫码测测你是哪种创业神兽</div>
+    <!-- 头部：人格类型 -->
+    <div class="share-card-header">
+      <div class="share-card-label">🎊 我的创业人格测试结果</div>
+      <div class="share-card-personality" id="share-card-personality">🐟 锦鲤选址师</div>
+      <div class="share-card-tag" id="share-card-tag">人流量探测器</div>
     </div>
-    <div class="share-card-brand">YUTI创业人格测试 · 余村全球合伙人</div>
+
+    <!-- 角色形象 -->
+    <div class="share-card-character">
+      <div class="share-card-character-bg" id="share-card-bg"></div>
+      <svg id="share-card-svg" viewBox="0 0 120 120" width="140" height="140"></svg>
+    </div>
+
+    <!-- 特质标签 -->
+    <div class="share-card-traits">
+      <div class="share-card-traits-title">✨ 你的核心特质</div>
+      <div class="share-card-traits-list" id="share-card-traits">
+        <span class="share-card-trait">🎯 目标感强</span>
+        <span class="share-card-trait">💡 独立思考</span>
+        <span class="share-card-trait">🔥 行动力强</span>
+      </div>
+    </div>
+
+    <!-- 描述 -->
+    <div class="share-card-desc" id="share-card-desc">
+      你天生就是做选址的料，能精准嗅到商机在哪里。对流量和人群有天然的敏感度，总能找到最佳位置。
+    </div>
+
+    <!-- 底部：二维码 -->
+    <div class="share-card-footer">
+      <div class="share-card-qrcode">
+        <div id="share-card-qr"></div>
+      </div>
+      <div class="share-card-info">
+        <div class="share-card-tip">扫码测测你是哪种创业神兽</div>
+        <div class="share-card-brand">YUTI创业人格测试<br>余村全球合伙人招募计划</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1915,6 +2018,9 @@ function calculateResult() {
     }
   });
 
+  // 保存结果类型到全局变量
+  window.currentResultType = resultType;
+
   const personality = personalities[resultType];
   renderResult(personality);
   showPage('result-page');
@@ -2102,8 +2208,8 @@ async function generateShareImage() {
       qrContainer.innerHTML = '';
       new QRCode(qrContainer, {
         text: SHARE_URL,
-        width: 150,
-        height: 150,
+        width: 72,
+        height: 72,
         colorDark: '#2D2D2D',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
@@ -2138,18 +2244,31 @@ async function generateShareImage() {
 }
 
 function updateShareCard() {
-  // 从当前结果更新分享卡内容
-  const title = document.getElementById('result-title').textContent;
-  const tag = document.getElementById('result-tag').textContent;
-  const desc = document.getElementById('result-desc').textContent;
-  const gradientBg = document.getElementById('result-tag').style.background;
+  // 获取当前结果类型
+  const currentType = window.currentResultType || 'S';
+  const p = personalities[currentType];
 
-  document.getElementById('share-card-personality').textContent = title;
-  document.getElementById('share-card-tag').textContent = tag;
-  document.getElementById('share-card-tag').style.background = gradientBg;
-  
-  // 截取描述前60字
-  const shortDesc = desc.length > 60 ? desc.substring(0, 60) + '...' : desc;
+  // 更新标题
+  document.getElementById('share-card-personality').textContent = p.emoji + ' ' + p.title;
+  document.getElementById('share-card-tag').textContent = p.tag;
+  document.getElementById('share-card-tag').style.background = p.gradientBg;
+
+  // 更新角色SVG
+  const svgContainer = document.getElementById('share-card-svg');
+  svgContainer.innerHTML = getCharacterSVG(currentType).replace('width="100%" height="100%"', 'width="140" height="140"');
+
+  // 更新背景圆
+  const bgEl = document.getElementById('share-card-bg');
+  bgEl.style.background = p.color;
+
+  // 更新特质标签
+  const traitsContainer = document.getElementById('share-card-traits');
+  traitsContainer.innerHTML = p.traits.map(t =>
+    `<span class="share-card-trait">${t.emoji} ${t.text}</span>`
+  ).join('');
+
+  // 更新描述
+  const shortDesc = p.desc.length > 80 ? p.desc.substring(0, 80) + '...' : p.desc;
   document.getElementById('share-card-desc').textContent = shortDesc;
 }
 
