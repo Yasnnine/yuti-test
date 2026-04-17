@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>YUTI创业人格测试 · 余村全球合伙人</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- 百度统计 -->
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?eea45ddd9c3428e7505284577b163f3d";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
   <style>
     /* ===== 全局样式 ===== */
     * {
@@ -826,9 +837,157 @@
         opacity: 0;
       }
     }
+
+    /* 分享图样式 */
+    #share-image-container {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 375px;
+      background: linear-gradient(180deg, #FFF9F0 0%, #FFE8D6 100%);
+      padding: 40px 30px;
+      box-sizing: border-box;
+    }
+
+    .share-card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 32px rgba(255, 107, 53, 0.15);
+      text-align: center;
+    }
+
+    .share-card-title {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .share-card-personality {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .share-card-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .share-card-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .share-card-qrcode {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-card-qrcode #share-card-qr {
+      background: white;
+      padding: 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .share-card-tip {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .share-card-brand {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    /* 分享图预览弹窗 */
+    #share-image-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    #share-image-modal.active {
+      display: flex;
+    }
+
+    #share-image-preview {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+
+    .share-image-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .share-image-btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .share-image-btn.primary {
+      background: linear-gradient(135deg, #FF6B35, #FF8E53);
+      color: white;
+    }
+
+    .share-image-btn.secondary {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
   </style>
 </head>
 <body>
+
+<!-- 分享图容器（隐藏，用于生成图片） -->
+<div id="share-image-container">
+  <div class="share-card">
+    <div class="share-card-title">我的创业人格测试结果</div>
+    <div class="share-card-personality" id="share-card-personality">🐟 锦鲤选址师</div>
+    <div class="share-card-tag" id="share-card-tag">人流量探测器</div>
+    <div class="share-card-desc" id="share-card-desc">你天生就是做选址的料，能精准嗅到商机...</div>
+    <div class="share-card-qrcode">
+      <div id="share-card-qr"></div>
+      <div class="share-card-tip">扫码测测你是哪种创业神兽</div>
+    </div>
+    <div class="share-card-brand">YUTI创业人格测试 · 余村全球合伙人</div>
+  </div>
+</div>
+
+<!-- 分享图预览弹窗 -->
+<div id="share-image-modal">
+  <img id="share-image-preview" src="" alt="分享图">
+  <div class="share-image-actions">
+    <button class="share-image-btn secondary" onclick="closeShareImageModal()">关闭</button>
+    <button class="share-image-btn primary" onclick="downloadShareImage()">保存图片</button>
+  </div>
+</div>
 
 <!-- 欢迎页 -->
 <div id="welcome-page" class="page active">
@@ -1093,7 +1252,7 @@
         </div>
         <div class="join-cta-desc">你的人格正好匹配我们！了解余村全球合伙人招募详情</div>
       </button>
-      <button class="share-btn" onclick="showShareModal()">📤 分享给朋友，看看ta是什么类型</button>
+      <button class="share-btn" onclick="generateShareImage()">📤 生成分享图，长按保存</button>
       <button class="retry-btn" onclick="retryTest()">↺ 再测一次</button>
     </div>
   </div>
@@ -1919,6 +2078,96 @@ function copyShareLink() {
       btn.style.background = 'linear-gradient(135deg,#FF6B35,#FF8E53)';
     }, 2000);
   }
+}
+
+// ===== 生成分享图 =====
+let shareImageCanvas = null;
+let shareCardQRGenerated = false;
+
+async function generateShareImage() {
+  // 显示加载提示
+  const btn = document.querySelector('.share-btn');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ 生成中...';
+  btn.disabled = true;
+
+  try {
+    // 更新分享卡内容
+    updateShareCard();
+    
+    // 生成二维码
+    if (!shareCardQRGenerated) {
+      shareCardQRGenerated = true;
+      const qrContainer = document.getElementById('share-card-qr');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: SHARE_URL,
+        width: 150,
+        height: 150,
+        colorDark: '#2D2D2D',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    // 等待二维码渲染完成
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // 使用 html2canvas 生成图片
+    const container = document.getElementById('share-image-container');
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#FFF9F0'
+    });
+
+    shareImageCanvas = canvas;
+    const imageUrl = canvas.toDataURL('image/png');
+
+    // 显示预览
+    document.getElementById('share-image-preview').src = imageUrl;
+    document.getElementById('share-image-modal').classList.add('active');
+
+  } catch (error) {
+    console.error('生成分享图失败:', error);
+    alert('生成失败，请重试');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+function updateShareCard() {
+  // 从当前结果更新分享卡内容
+  const title = document.getElementById('result-title').textContent;
+  const tag = document.getElementById('result-tag').textContent;
+  const desc = document.getElementById('result-desc').textContent;
+  const gradientBg = document.getElementById('result-tag').style.background;
+
+  document.getElementById('share-card-personality').textContent = title;
+  document.getElementById('share-card-tag').textContent = tag;
+  document.getElementById('share-card-tag').style.background = gradientBg;
+  
+  // 截取描述前60字
+  const shortDesc = desc.length > 60 ? desc.substring(0, 60) + '...' : desc;
+  document.getElementById('share-card-desc').textContent = shortDesc;
+}
+
+function closeShareImageModal() {
+  document.getElementById('share-image-modal').classList.remove('active');
+}
+
+function downloadShareImage() {
+  if (!shareImageCanvas) return;
+
+  // 创建下载链接
+  const link = document.createElement('a');
+  link.download = 'YUTI创业人格测试-' + new Date().getTime() + '.png';
+  link.href = shareImageCanvas.toDataURL('image/png');
+  link.click();
+
+  // 关闭弹窗
+  closeShareImageModal();
 }
 
 function shareToWechat() {
